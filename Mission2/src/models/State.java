@@ -97,8 +97,8 @@ public class State {
 		String showStream = securityTeam == 1 ? "\t\t <-- " : " --> \t\t";
 		int shoreMaxSize = shore0.size() > shore1.size() ? shore0.size() : shore1.size();
 		for (int i = 0; i < shoreMaxSize; i++) {
-			String boat0 = format8(i < shore0.size() ? shore0.get(i).getTime() + "" : "");
-			String boat1 = i < shore1.size() ? shore1.get(i).getTime() + "" : "";
+			String boat0 = format8(i < shore0.size() ? shore0.get(i).getName() : "");
+			String boat1 = i < shore1.size() ? shore1.get(i).getName() : "";
 			display += boat0 + showStream + boat1 + "\n";
 		}
 		display += "F:" + this.finalCost + " H:" + this.heuristicCost;
