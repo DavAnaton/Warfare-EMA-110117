@@ -1,8 +1,8 @@
-package models;
+package models.pieces;
 
 public class Tank extends Piece {
 
-	private static boolean here = false;
+	private static boolean here = true;
 	private final static boolean [][] TankMovementMask = {	{false, false, false, false, false},
 															{false, false, false, false, false},
 															{false,  true,  true,  true, false},
@@ -10,12 +10,9 @@ public class Tank extends Piece {
 															{false,  true,  true,  true, false},
 															{false, false, false, false, false}};
 
-	private final static boolean [][] TankShootingMask = {	{false, false,  true, false, false},
-															{false, false,  true, false, false},
-															{false, false,  true, false, false},
-															{ true,  true,  here,  true,  true},
-															{false, false, false, false, false},
-															{false, false, false, false, false}};
+	private final static int [][] TankShootingMask = {	{0, 2, 0},
+														{2, 0, 2},
+														{0, 0, 0}};
 	
 	public Tank() {
 		super();
@@ -27,11 +24,11 @@ public class Tank extends Piece {
 		this.shootingMask = TankShootingMask;
 		this.movementMask = TankMovementMask;
 	}
+	public Tank(Tank t){
+		this(t.x, t.y, t.player);
+	}
 	public Tank copy(){
-		Tank copy = new Tank(this.x, this.y, this.player);
-		copy.movementMask = this.movementMask;
-		copy.shootingMask = this.shootingMask;
-		return copy;
+		return new Tank(this);
 	}
 	public String toString(){
 		return "R" + this.player;

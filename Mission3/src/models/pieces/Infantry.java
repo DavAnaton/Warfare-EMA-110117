@@ -1,8 +1,8 @@
-package models;
+package models.pieces;
 
 public class Infantry extends Piece {
 
-	private static boolean here = false;
+	private static boolean here = true;
 	private final static boolean [][] InfantryMovementMask = {	{false, false, false, false, false},
 																{ true, false,  true, false,  true},
 																{false,  true,  true,  true, false},
@@ -10,13 +10,10 @@ public class Infantry extends Piece {
 																{false,  true,  true,  true, false},
 																{ true, false,  true, false,  true}};
 
-	private final static boolean [][] InfantryShootingMask = {	{false, false, false, false, false},
-																{false, false, false, false, false},
-																{false, false,  true, false, false},
-																{false,  true,  here,  true, false},
-																{false, false, false, false, false},
-																{false, false, false, false, false}};
-	
+	private final static int [][] InfantryShootingMask = {	{0, 1, 0},
+															{1, 0, 1},
+															{0, 0, 0}};
+
 	public Infantry() {
 		super();
 		this.shootingMask = InfantryShootingMask;
@@ -27,11 +24,11 @@ public class Infantry extends Piece {
 		this.shootingMask = InfantryShootingMask;
 		this.movementMask = InfantryMovementMask;
 	}
+	public Infantry(Infantry i){
+		this(i.x, i.y, i.player);
+	}
 	public Infantry copy(){
-		Infantry copy = new Infantry(this.x, this.y, this.player);
-		copy.movementMask = this.movementMask;
-		copy.shootingMask = this.shootingMask;
-		return copy;
+		return new Infantry(this);
 	}
 	public String toString(){
 		return "L" + this.player;

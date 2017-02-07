@@ -1,8 +1,8 @@
-package models;
+package models.pieces;
 
 public class Rook extends Piece {
 
-	private static boolean here = false;
+	private static boolean here = true;
 	private final static boolean [][] RookMovementMask = {	{false, false, false, false, false},
 															{false, false, false, false, false},
 															{false,  true,  true,  true, false},
@@ -10,12 +10,9 @@ public class Rook extends Piece {
 															{false,  true,  true,  true, false},
 															{false, false, false, false, false}};
 
-	private final static boolean [][] RookShootingMask = {	{false, false, false, false, false},
-															{ true, false,  true, false,  true},
-															{false,  true,  true,  true, false},
-															{ true,  true,  here,  true,  true},
-															{false,  true,  true,  true, false},
-															{ true, false,  true, false,  true}};
+	private final static int [][] RookShootingMask = {	{2, 2, 2},
+														{2, 0, 2},
+														{2, 2, 2}};
 	
 	public Rook() {
 		super();
@@ -27,11 +24,11 @@ public class Rook extends Piece {
 		this.shootingMask = RookShootingMask;
 		this.movementMask = RookMovementMask;
 	}
+	public Rook(Rook r){
+		this(r.x, r.y, r.player);
+	}
 	public Rook copy(){
-		Rook copy = new Rook(this.x, this.y, this.player);
-		copy.movementMask = this.movementMask;
-		copy.shootingMask = this.shootingMask;
-		return copy;
+		return new Rook(this);
 	}
 	public String toString(){
 		return "S" + this.player;

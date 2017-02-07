@@ -1,87 +1,139 @@
 package models;
 
+import java.util.ArrayList;
+
+import algorithms.State;
+import models.pieces.Infantry;
+import models.pieces.Piece;
+import models.pieces.Rook;
+import models.pieces.Tank;
+import models.players.AI;
+import models.players.Bot;
+import models.players.Player;
+
 public class Game {
 	private Board board;
-	private Joueur[] joueurs;
+	private Player[] players;
 	private int attacker;
 	
 	public Game() {
 		this.board = new Board();
-		this.joueurs = new Joueur[2];
-		this.joueurs[0] = new Joueur();
-		this.joueurs[1] = new Joueur();
+		this.players = new Player[2];
+		this.players[0] = new Player();
+		this.players[1] = new Player();
 		this.attacker = 0;
+		this.players[0].setGame(this);
+		this.players[1].setGame(this);
 	}
-	public Game(int sizeX, int sizeY) {
-		this.board = new Board(sizeX, sizeY);
-		this.joueurs = new Joueur[2];
-		this.joueurs[0] = new Joueur();
-		this.joueurs[1] = new Joueur();
-		this.attacker = 0;
+	public Game(Player p1, Player p2){
+		this();
+		this.players[0] = p1;
+		this.players[1] = p2;
+		this.players[0].setGame(this);
+		this.players[1].setGame(this);
 	}
-	public Game(char[][] contentMap) {
-		this.board = new Board(contentMap);
-		this.joueurs = new Joueur[2];
-		this.joueurs[0] = new Joueur();
-		this.joueurs[1] = new Joueur();
-		this.attacker = 0;
-		placePieces(contentMap);
+	public Game(String[][] contentMap) {
+		this();
+		this.placePieces(contentMap);
 	}
-
-	public void start(){
-		System.out.println(this.board);
+	public Game(Player p1, Player p2, String[][] contentMap){
+		this(p1, p2);
+		this.placePieces(contentMap);
 	}
 	
-	public Game copy(){
+	public Game(State s){
+		this(s.getContentMap());
+		this.attacker = s.getAttacker();
+	}
+	
+	public Game copy() {
 		Game copy = new Game();
 		copy.board = this.board.copy();
 		copy.attacker = this.attacker;
 		return copy;
 	}
-	
-	public void placePieces(char[][] contentMap){
-		for (int i = 0; i < contentMap.length; i++) {
-			for (int j = 0; j < contentMap[i].length; j++) {
-				char pieceType = contentMap[i][j];
-				int x1 = j, y1 = i,
-					x2 = this.board.getSizeX() - (j + 1), y2 = this.board.getSizeY() - (i + 1);
-				Piece piece0 = null, piece1 = null;
-				switch (pieceType){
-					case 'R':
-						piece0 = new Tank(x1, y1, 0);
-						piece1 = new Tank(x2, y2, 1);
-					case 'S':
-						piece0 = new Rook(x1, y1, 0);
-						piece1 = new Rook(x2, y2, 1);
-					case 'L':
-						piece0 = new Infantry(x1, y1, 0);
-						piece1 = new Infantry(x2, y2, 1);
-				}
-				joueurs[0].placePiece(piece0);
-				board.setContent(x1, y1, piece0);
-				joueurs[1].placePiece(piece1);
-				board.setContent(x2, y2, piece1);
-				
-			}
-		}
-	}
+
 	public Board getBoard() {
 		return board;
-	}
-	public void setBoard(Board board) {
-		this.board = board;
-	}
-	public Joueur[] getJoueurs() {
-		return joueurs;
-	}
-	public void setJoueurs(Joueur[] joueurs) {
-		this.joueurs = joueurs;
 	}
 	public int getAttacker() {
 		return attacker;
 	}
-	public void setAttacker(int attacker) {
-		this.attacker = attacker;
+	public Player getPlayer(int i){
+		Player p = null;
+		if(i<this.players.length){
+			p = this.players[i];
+		}
+		return p;
+	}
+	private void placePieces(String[][] contentMap) {
+		this.board = new Board(contentMap[0].length, contentMap.length);
+		for (int j = 0; j < contentMap.length; j++) {
+			for (int i = 0; i < contentMap[j].length; i++) {
+				String pieceCode= contentMap[j][i];
+				if (pieceCode == null) {
+					continue;
+				} else {
+					int ownerIndex = Integer.parseInt(pieceCode.substring(1, 2));
+					String pieceType = pieceCode.substring(0, 1);
+					Player owner = this.players[ownerIndex];
+					Piece piece = null;
+					switch (pieceType) {
+						case "R":
+							piece = new Tank(i, j, ownerIndex);
+							break;
+						case "S":
+							piece = new Rook(i, j, ownerIndex);
+							break;
+						case "L":
+							piece = new Infantry(i, j, ownerIndex);
+							break;
+						}
+						owner.placePiece(piece);
+						this.board.setContent(i, j, piece);
+				}
+			}
+		}
+	}
+
+	public void play() {
+			System.out.println(this.board);
+		while(true){
+			this.players[this.attacker].play();
+			
+			int defender = (this.attacker == 0) ? 1 : 0;
+			this.players[defender].updatePiecesList(this.board);
+			
+			System.out.println(this.board);
+			
+			if(this.players[defender].getNbPieces() == 0){
+				break;
+			}else{
+				this.attacker = defender;
+			}
+
+		}
+		System.out.println("Player " + this.attacker + " won");
+	}
+	
+	public void test(){
+		this.players[this.attacker].play();
+	}
+	
+	public String[][] getContentMap(){
+		String[][] contentMap = new String[this.board.getSizeY()][this.board.getSizeX()];
+		String cellValue;
+		for (int i = 0; i < contentMap.length; i++) {
+			for (int j = 0; j < contentMap[0].length; j++) {
+				cellValue = this.board.getContent(j, i) == null ? null : this.board.getContent(j, i).toString();
+				contentMap[i][j] = cellValue;
+			}
+		}
+		return contentMap;
+	}
+	
+	public ArrayList<int[]> getHistory(int i){
+		return this.board.getHistory(i);
 	}
 	
 
