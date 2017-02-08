@@ -2,7 +2,7 @@ package models.players;
 
 import java.util.ArrayList;
 
-import algorithms.BFS;
+import algorithms.Minimax;
 import algorithms.State;
 import models.Board;
 import models.Game;
@@ -27,7 +27,7 @@ public class AI extends Player {
 	}
 
 	public void play() {
-		ArrayList<int[]> shot = BFS.BFS(this.game, this.strength).getLastMove();
+		ArrayList<int[]> shot = Minimax.Minimax(this.game, this.strength).getLastMove();
 		ArrayList<int[]> move = new ArrayList<int[]>();
 		move.add(shot.remove(0));
 		move.add(shot.remove(0));

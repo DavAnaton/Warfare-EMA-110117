@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import models.Game;
 
-public class BFS {
+public class Minimax {
 	private static ArrayList<ArrayList<State>> tree;
 	private static ArrayList<Integer> childIndexes;
 	private static ArrayList<Float> maxs;
@@ -13,7 +13,7 @@ public class BFS {
 	private static int level;
 	private static boolean updating;
 
-	public static State BFS(Game currentGame, int iteration) {
+	public static State Minimax(Game currentGame, int iteration) {
 		State bestState = null;
 
 		State init = new State(currentGame);
