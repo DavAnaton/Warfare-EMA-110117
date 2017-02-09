@@ -1,10 +1,17 @@
 package algorithms;
 import java.util.*;
 
-import models.State;
-
+/**
+ * Class used to apply an A* on a graph and find shortest path to the final state
+ *
+ */
 public class AStar {
 	
+	/**
+	 * Applies the A* algorithm to the state and finds the shortest path to the final state
+	 * @param init The initial state
+	 * @return An array of all the states between the initial and final states (included)
+	 */
 	public static ArrayList<State> apply(State init){
 		State finalState = init.finalState();
 
@@ -15,7 +22,6 @@ public class AStar {
 		State current;
 		
 		while(true){
-//			display(openStates);
 			current = pop(openStates);
 			
 			if(finalState.equals(current)){
@@ -30,6 +36,12 @@ public class AStar {
 		return constructPath(current);
 	}
 	
+	/**
+	 * Gives the next state to explore. It searches for the lowest heuristic cost.
+	 * In other terms, it looks for the most promising state.
+	 * @param open The list of possible states
+	 * @return The best state to explore
+	 */
 	private static State pop(ArrayList<State> open){
 		State current;
 		int currentIndex = 0;
@@ -44,12 +56,15 @@ public class AStar {
 		current = open.get(currentIndex);
 		open.remove(current);
 		current.close();
-//		System.out.println("####################");
-//		System.out.println(current);
-//		System.out.println("####################");
 		return current;
 	}
 	
+	/**
+	 * Start from the ending state and goes all the way back to the initial state to create the list
+	 * of state in between.
+	 * @param finalState The end node
+	 * @return The list of state to use to get to the end state
+	 */
 	private static ArrayList<State> constructPath(State finalState){
 		ArrayList<State> path = new ArrayList<State>();
 		State step = finalState;
@@ -60,6 +75,11 @@ public class AStar {
 		return path;
 	}
 	
+	// Display
+	/**
+	 * Used to display a path: a list of states
+	 * @param open The path to print
+	 */
 	public static void display(ArrayList<State> open){
 		for (State state : open) {
 			System.out.println(state);

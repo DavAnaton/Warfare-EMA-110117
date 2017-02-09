@@ -2,15 +2,20 @@ package models.shipments;
 
 import models.containers.Spot;
 
+/**
+ * Abstract class used to define the generic behavior of a shipment.
+ * Also used to create a specific shipment from its name.
+ */
 public abstract class GenericShipment {
 
+	// Constructors
 	public GenericShipment() {
 	}
-
-	public abstract String toString();
-	
-	public abstract boolean validatePosition(Spot s);
-	
+	/**
+	 * Create a package based on its content.
+	 * @param s The type of the box you need to create
+	 * @return The shipment
+	 */
 	public static GenericShipment fromString(String s){
 		GenericShipment shipment = null;
 		
@@ -31,5 +36,17 @@ public abstract class GenericShipment {
 		
 		return shipment;
 	}
+	
+	// Methods
+	/**
+	 * Checks if every rule for this package is respected:
+	 * 
+	 * - *INSERT RULES HERE* 
+	 * 
+	 */
+	public abstract boolean validatePosition(Spot s);
+	
+	// Display
+	public abstract String toString();
 	
 }

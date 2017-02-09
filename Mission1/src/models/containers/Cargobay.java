@@ -9,15 +9,8 @@ import models.shipments.GenericShipment;
 public class Cargobay {
 	// Attributes
 	private ArrayList<Spot> cargoBay;
-	public ArrayList<Spot> getSpots(){
-		return this.cargoBay;
-	}
-
-	private int spotMaxSize;	
-	public int getSpotMaxSize(){
-		return this.spotMaxSize;
-	}
-
+	private int spotMaxSize;
+	
 	// Constructors
 	public Cargobay() {
 		this.cargoBay = new ArrayList<Spot>();
@@ -41,8 +34,21 @@ public class Cargobay {
 		this.cargoBay = cargo;
 		this.spotMaxSize = sizeSpot;
 	}
+	
+	// Getters & Setters
+	public ArrayList<Spot> getSpots(){
+		return this.cargoBay;
+	}
+	public int getSpotMaxSize(){
+		return this.spotMaxSize;
+	}
 
 	// Methods
+	/**
+	 * Transforms the cargo bay into a represatation based on Strings for storage in 
+	 * algorithms.State
+	 * @return The serialization
+	 */
 	public ArrayList<ArrayList<String>> serialize(){
 		ArrayList<ArrayList<String>> values = new ArrayList<ArrayList<String>>();
 		for (Spot spot : cargoBay) {
@@ -54,6 +60,12 @@ public class Cargobay {
 		}
 		return values;
 	}
+	/**
+	 * Creates a cargo bay from its serialization.
+	 * @param values The serialization
+	 * @param spotMaxSize The max size of each spot in the cargo
+	 * @return An object of type models.Cargobay corresponding to the given serialization
+	 */
 	public static Cargobay deserialize(ArrayList<ArrayList<String>> values, int spotMaxSize){
 		ArrayList<Spot> allSpots = new ArrayList<Spot>();
 		
@@ -66,14 +78,18 @@ public class Cargobay {
 		}
 		return new Cargobay(allSpots, allSpots.get(0).getMaxSize());
 	}
-	
+	/**
+	 * Checks if the cargo is already full
+	 * TODO: this function
+	 * @return True if the cargo bay is full, false otherwise.
+	 */
 	public boolean isFull(){
 		boolean isFull = true;
-		isFull = false; /// TODO here
+		isFull = false;
 		return isFull;
 	}
 
-	// Overrides
+	// Display
 	public String toString(){
 		String display = "";
 		

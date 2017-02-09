@@ -12,13 +12,20 @@ public class Food extends GenericShipment {
 	}
 
 	// Methods
+
+	/**
+	 * Checks if every rule for this package is respected:
+	 * 
+	 * - No rule for this package
+	 * 
+	 */
 	public boolean validatePosition(Spot s) {
 		boolean valid = s.getContent().size() < s.getMaxSize();
 		
 		return valid;
 	}
 	
-	// Overrides
+	// Display
 	public String toString() {
 		return "Food";
 	}

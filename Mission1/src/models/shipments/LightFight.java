@@ -12,6 +12,12 @@ public class LightFight extends GenericShipment {
 	}
 
 	// Methods
+	/**
+	 * Checks if every rule for this package is respected:
+	 * 
+	 * - An LightFight can't be placed over a box of Food
+	 * 
+	 */
 	public boolean validatePosition(Spot s) {
 		boolean valid = s.getContent().size() < s.getMaxSize();
 		
@@ -26,7 +32,7 @@ public class LightFight extends GenericShipment {
 		return valid;
 	}
 
-	// Overrides
+	// Display
 	public String toString() {
 		return "LightFight";
 	}

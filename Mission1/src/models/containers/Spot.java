@@ -9,13 +9,7 @@ public class Spot {
 	
 	// Attributes
 	private ArrayList<GenericShipment> content;
-	public  ArrayList<GenericShipment> getContent(){
-		return this.content;
-	}
 	private int maxSize;
-	public  int getMaxSize(){
-		return this.maxSize;
-	}
 
 	// Constructors
 	public Spot() {
@@ -36,10 +30,31 @@ public class Spot {
 		}
 	}
 
+	// Getters & Setters
+	public  ArrayList<GenericShipment> getContent(){
+		return this.content;
+	}
+	public  int getMaxSize(){
+		return this.maxSize;
+	}
+	
 	// Methods
+	/**
+	 * See placeShipment(GenericShipment, boolean)
+	 * @param s The shipment to place
+	 * @return True if the shipment was placed successfully, false otherwise.
+	 */
 	public boolean placeShipment(GenericShipment s){
 		return this.placeShipment(s, Spot.TOP);
 	}
+	/**
+	 * Verifies if the shipment can go to this spot and then places it.
+	 * 
+	 * @param s The shipment to place
+	 * @param position The place in the spot where you want to place it. Can be Spot.TOP or Spot.BOTTOM
+	 * 					*WARNING*: Spot.BOTTOM is only used to copy a spot. It doesn't check any rule and just places the box
+	 * @return True if the shipment was placed successfully, false otherwise.
+	 */
 	public boolean placeShipment(GenericShipment s, boolean position){
 		boolean successfulPlacement = true;
 		
@@ -61,10 +76,15 @@ public class Spot {
 		return successfulPlacement;
 	}
 	
-	// Override
+	// Display
 	public String toString(){
 		return this.toString("");
 	}
+	/**
+	 * If you want to add a specific number of tabs before each line of the content of this spot
+	 * @param initialTabs
+	 * @return
+	 */
 	public String toString(String initialTabs){
 		String display = "";
 		

@@ -27,7 +27,9 @@ public class AI extends Player {
 	}
 
 	public void play() {
-		ArrayList<int[]> shot = Minimax.Minimax(this.game, this.strength).getLastMove();
+		State bestState = Minimax.Minimax(this.game, this.strength);
+//		System.out.println(bestState);
+		ArrayList<int[]> shot = bestState.getLastMove();
 		ArrayList<int[]> move = new ArrayList<int[]>();
 		move.add(shot.remove(0));
 		move.add(shot.remove(0));

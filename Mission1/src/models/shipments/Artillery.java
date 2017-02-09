@@ -12,6 +12,13 @@ public class Artillery extends GenericShipment {
 	}
 
 	// Methods
+	/**
+	 * Checks if every rule for this package is respected:
+	 * 
+	 * - Not more than 2 Artilleries are in the same spot
+	 * - An Artillery can't be placed over any other box
+	 * 
+	 */
 	public boolean validatePosition(Spot s) {
 		boolean valid = s.getContent().size() < s.getMaxSize();
 		
@@ -39,7 +46,7 @@ public class Artillery extends GenericShipment {
 		return valid;
 	}
 	
-	// Overrides
+	// Display
 	public String toString() {
 		return "Artillery";
 	}

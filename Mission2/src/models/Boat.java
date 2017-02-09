@@ -3,20 +3,7 @@ package models;
 public class Boat {
 	// Attributes
 	private String name;
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
 	private int time;
-	public int getTime() {
-		return time;
-	}
-	public void setTime(int time) {
-		this.time = time;
-	}
 	
 	// Constructors
 	public Boat(){
@@ -26,6 +13,20 @@ public class Boat {
 	public Boat(String n, int t){
 		this.name = n;
 		this.time = t;
+	}
+	
+	// Getters & Setters
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getTime() {
+		return time;
+	}
+	public void setTime(int time) {
+		this.time = time;
 	}
 
 	// Display

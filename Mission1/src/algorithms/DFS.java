@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 import models.containers.Cargobay;
 import models.shipments.GenericShipment;
-
+/**
+ * Class used to apply a Deep-First-Search on a graph and find the best configuration
+ * you can achieve with given initial state.
+ *
+ */
 public class DFS {
 
 	private static ArrayList<ArrayList<State>> tree;
@@ -12,6 +16,12 @@ public class DFS {
 
 	private static int level;
 
+	/**
+	 * Gives the best configuration when given a cargo bay to fill and a list of shipment to get on board.
+	 * @param c The cargo bay
+	 * @param l The list of shipment we need to load
+	 * @return A state where everything is placed in the cargo bay
+	 */
 	public static State DFS(Cargobay c, ArrayList<GenericShipment> l) {
 		State init = new State(c, l);
 
@@ -31,8 +41,9 @@ public class DFS {
 		childIndexes.add(0);
 
 		State currentNode;
-
+		int iterations = 0;
 		do {
+			iterations ++;
 			// When there's no node available on this level
 			if (childIndexes.get(level) == tree.get(level).size()) {
 				level = remove(level);
@@ -60,11 +71,19 @@ public class DFS {
 				}
 			}
 		} while (true);
-
+		
+		System.out.println("Done in " + iterations + " iterations.");
+		
 		return currentNode;
 	}
 
-
+	/**
+	 * Internal Method
+	 * Removes the current level in the DFS tree and everything related to it
+	 * Then, places the "cursor" on the next node to explore
+	 * @param level The level you need to erase
+	 * @return The level where you will be after deletion
+	 */
 	private static int remove(int level) {
 		// Removes data related to that level
 		tree.remove(level);
@@ -76,10 +95,6 @@ public class DFS {
 		level--;
 
 		return level;
-	}
-
-	private static void displayCurrentNode() {
-		System.out.println("LEVEL:" + level + " POSSIBILITY:" + (childIndexes.get(level)+1) + "/" + tree.get(level).size());
 	}
 
 }

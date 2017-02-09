@@ -12,6 +12,13 @@ public class Ammo extends GenericShipment {
 	}
 
 	// Methods
+	/**
+	 * Checks if every rule for this package is respected:
+	 * 
+	 * - Not 2 Ammos are in the same spot
+	 * - An Ammo can't be placed over a box of Food
+	 * 
+	 */
 	public boolean validatePosition(Spot s) {
 		boolean valid = s.getContent().size() < s.getMaxSize();
 
@@ -33,7 +40,7 @@ public class Ammo extends GenericShipment {
 		return valid;
 	}
 
-	// Overrides
+	// Display
 	public String toString() {
 		return "Ammo";
 	}

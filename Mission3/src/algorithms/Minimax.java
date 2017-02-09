@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 import models.Game;
 
+
+/**
+ * Class used to apply a Minimax on a graph and maximizing the points scored by an AI
+ * while minimizing the points scored by an opponent
+ *
+ */
 public class Minimax {
 	private static ArrayList<ArrayList<State>> tree;
 	private static ArrayList<Integer> childIndexes;
@@ -13,87 +19,116 @@ public class Minimax {
 	private static int level;
 	private static boolean updating;
 
+	/**
+	 * Applies to algorithms to a specific game and compute a specific amount of moves to
+	 * find out what's the best move to play.
+	 * @param currentGame The game being played in its current state
+	 * @param iteration The depth in number of move to compute
+	 * @return The best move to play
+	 */
 	public static State Minimax(Game currentGame, int iteration) {
 		State bestState = null;
 
+		// Create initial state
 		State init = new State(currentGame);
 		ArrayList<State> firstLevel = new ArrayList<State>();
 		firstLevel.add(init);
 
+		// Add it to the tree
 		tree = new ArrayList<ArrayList<State>>();
 		tree.add(firstLevel);
-
+		
+		// Keep track on where we are on each level of the tree
 		childIndexes = new ArrayList<Integer>();
-		childIndexes.add(0); // begin at index 0 (init) on first level
-
+		
+		// Max score that can be achieved on a level
 		maxs = new ArrayList<Float>();
 		maxs.add(-Float.MAX_VALUE);
+		// Min score that can be achieved on a level
 		mins = new ArrayList<Float>();
 		mins.add(Float.MAX_VALUE);
 
-		level = 0; // begin at level 0 (init)
+		// Begin at the index 0 of the level 0: Initial state
+		level = 0;
+		childIndexes.add(0);
+		
+		// No need to update the min and max values for now, we're just getting started
+		// It's changed when we finish exploring a level
 		updating = false;
 
 		State nextToExplore;
 
 		do {
 			nextToExplore = tree.get(level).get(childIndexes.get(level));
-			displayNode(null, nextToExplore);
+
+			// DEBUG
+			if(false&&level >= 2 && childIndexes.get(level-1) == 3) pl (nextToExplore);
+			// ENDOFDEBUG
 			
+			// The next level has all of its values computed, we can store the best score in
+			// the current level
 			if (updating) {
 				if (level == 0) {
+					// The initial states knows its best possible score and how to get it
 					break;
 					
-				} else {
-					if(nextToExplore.getScore() == 0){
+				} else { 
+					// If nodeToExplore has children
+					if(tree.size() > level+1){
+
 						if(level%2 == 1){
 							nextToExplore.setScore(maxs.get(level + 1));
+							// TODO alpha;beta couple
 						}else{
 							nextToExplore.setScore(mins.get(level + 1));
 						}
 
+						// DEBUG
+						if(childIndexes.get(1) == 3) pl (level + "x-" + childIndexes.get(level) + " " + maxs.get(level + 1) + " " + mins.get(level + 1));
+						// ENDOFDEBUG
 					}
-					pl("MAX:" + maxs.get(level+1) + " MIN:" + mins.get(level+1));
-					pl(nextToExplore);
-					tree.remove(level + 1);
-					childIndexes.remove(level + 1);
-					maxs.remove(level + 1);
-					mins.remove(level + 1);
+					remove(level + 1);
 
 					if (childIndexes.get(level) + 1 < tree.get(level).size()) {
+						// Goto next sibling
 						childIndexes.set(level, childIndexes.get(level) + 1);
 						updating = false;
-						continue;
+					}else{
+						level--;
 					}
-					level--;
 				}
 
-			} else if (level == iteration) {
-				// we calc the min and max
+			} 
+			
+			// We are at the desired depth. We can evaluate the score of each 
+			else if (level == iteration) {
+				// We find were are the maximum and minimum scores
 				float min = Float.MAX_VALUE, max = -Float.MAX_VALUE;
-				int minIndex = 0, maxIndex = 0;
-
 				for (int i = 0; i < tree.get(level).size(); i++) {
 					childIndexes.set(level, i);
 					float score = tree.get(level).get(i).calcScore();
+					max = Float.max(max, score);
+					min = Float.min(min, score);
 
-					displayNode(null, nextToExplore);
-					if (score > max) {
-						max = score;
-					}
-					if (score < min) {
-						min = score;
-					}
 
 				}
-
+				
+				// We set the maximum and minimum value for this level in the tree.
 				maxs.set(level, max);
 				mins.set(level, min);
+				
 
+				// DEBUG
+				if(childIndexes.get(1) == 3) pl (level + "-" + childIndexes.get(level) + " " + maxs.get(level) + " " + mins.get(level));
+				// ENDOFDEBUG
+
+				// We update the parent node
 				updating = true;
-
 				level--;
-			} else {
+			} 
+			
+			// Not yet at desired depth; we keep digging.
+			else {
 				tree.add(nextToExplore.getNexts()); // add a level with the
 													// childs of the node to
 													// explore
@@ -105,10 +140,14 @@ public class Minimax {
 					level++;
 				} else {
 					nextToExplore.setScore(level%2==1? Float.MAX_VALUE: -Float.MAX_VALUE);
-//					System.out.println(nextToExplore);
 					updating = true;
 				}
 			}
+			
+			// DEBUG
+			if(!updating) pl("Level " + level + " Node: " + childIndexes.get(level) + "/ " + (tree.get(level).size()-1));
+			// ENDOFDEBUG
+			
 		} while (true);
 
 		float bestPossibleScore = -Float.MAX_VALUE;
@@ -118,37 +157,28 @@ public class Minimax {
 			if(state.getScore() >= bestPossibleScore){
 				bestPossibleScore = state.getScore();
 				bestState = state;
+				System.out.println(state);
 			}
 		}
-		pl(bestState);
 		return bestState;
 	}
-	
-	private static void displayCurrentNode(){
-		String display = "";
-		for (int i = 0; i <= level; i++) {
-			display += childIndexes.get(i);
-			if(i<level) display += "-";
-		}
-		System.out.println("LEVEL "+level+" GOTO " + display);
+
+	/**
+	 * Internal Method
+	 * Removes the current level in the DFS tree and everything related to it
+	 * @param level The level you need to erase
+	 */
+	private static void remove(int level) {
+		// Removes data related to that level
+		tree.remove(level);
+		childIndexes.remove(level);
+		maxs.remove(level);
+		mins.remove(level);
+
 	}
 	
-	private static void displayNode(int[] address, State node){
-		if(address != null){
-		boolean display = childIndexes.size() >= address.length;
-		for (int i = 0; i < address.length; i++) {
-			display = display && childIndexes.get(i) == address[i];
-		}
-		if(display){
-			displayCurrentNode();
-			pl(node);
-		}
-		}else{
-			displayCurrentNode();
-			pl(node);
-		}
-	}
-	private static void pl(Object o){
+	// DEBUG
+	public static void pl(Object o){
 		System.out.println(o);
 	}
 	

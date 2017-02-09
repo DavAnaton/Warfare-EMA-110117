@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import models.shipments.*;
 import models.containers.*;
 
+/**
+ * Represents a state that holds a cargo bay and every remaing item to store in it.
+ */
 public class State {
 
 	// Attributes
@@ -12,6 +15,105 @@ public class State {
 	private ArrayList<String> loadingDock;
 	
 	private int score;
+	private int spotMaxSize;
+
+	// Constructors
+	public State() {
+		this.cargo = new ArrayList<ArrayList<String>>();
+		this.loadingDock = new ArrayList<String>();
+		this.score = Integer.MAX_VALUE;
+		this.spotMaxSize = 0;
+	}
+	public State(Cargobay c, ArrayList<GenericShipment> s) {
+		this();
+		this.cargo = c.serialize();
+		this.spotMaxSize = c.getSpotMaxSize();
+		for (GenericShipment genericShipment : s) {
+			this.loadingDock.add(genericShipment.toString());
+		}
+		this.calcScore();
+	}
+	public State(State s) {
+		this();
+		for (ArrayList<String> arrayList : s.cargo) {
+			ArrayList<String> copy = new ArrayList<String>();
+			for (String string : arrayList) {
+				copy.add(string);
+			}
+			this.cargo.add(copy);
+		}
+		for (String value : s.loadingDock) {
+			this.loadingDock.add(value);
+		}
+		this.score = s.score;
+		this.spotMaxSize = s.spotMaxSize;
+	}
+
+	// Getters & Setters
+	public int getScore() {
+		return this.score;
+	}
+
+	// Methods
+	/**
+	 * Generates the list of state children to this one
+	 * @return The list of children
+	 */
+	public ArrayList<State> getNexts() {
+		ArrayList<State> nexts = new ArrayList<State>();
+		Cargobay cargobay = Cargobay.deserialize(this.cargo, this.spotMaxSize);
+
+		if (this.loadingDock.size() == 0 || cargobay.isFull()) {
+			nexts = null;
+		}
+
+		else {
+			ArrayList<Spot> spotsInCargobay = cargobay.getSpots();
+			int sizeOfLoadingDock = this.loadingDock.size();
+
+			for (int i = 0; i < sizeOfLoadingDock; i++) {
+				// Removing item from the list to place it
+				String typeOfShipment = this.loadingDock.remove(i);
+				GenericShipment shipment = GenericShipment.fromString(typeOfShipment);
+
+				for (int j = 0; j < spotsInCargobay.size(); j++) {
+					// Verification for all the rules given in the shipment itself
+					// (For example, "DO NOT PLACE THIS OVER A FOOD BOX")
+					if (shipment.validatePosition(spotsInCargobay.get(j))) {
+						State newState = this.generateNextState(j, typeOfShipment);
+						boolean isNotDuplicated = true;
+
+						for (State state : nexts) {
+							if (state.equals(newState)) {
+								isNotDuplicated = false;
+							}
+						}
+
+						if (isNotDuplicated) {
+							newState.calcScore();
+							nexts.add(newState);
+						}
+					}
+				}
+
+				this.loadingDock.add(i, typeOfShipment);
+			}
+		}
+		return nexts;
+	}
+	
+	/**
+	 * Calculate the score given to this state.
+	 * 
+	 * The score we chose is the following:
+	 * - 1 pt per box that needs to be placed
+	 * - 5 pt more for each box that still needs to be placed near to the cockpit
+	 * 
+	 * It allows to explore those configurations only.
+	 * TODO: 	If it is not possible to solve the problem with those boxes near to the 
+	 * 			cockpit, we'll have an error (because the score will never reach 0).
+	 * 			It would be great to handle this case.
+	 */
 	private void calcScore() {
 		int calc = this.loadingDock.size();
 
@@ -52,93 +154,20 @@ public class State {
 
 		this.score = calc;
 	}
-	public int getScore() {
-		return this.score;
+
+	/**
+	 * Generates a new state from the current where the box is place
+	 * @param position The spot where you want to place the box
+	 * @param type The type of the box to place
+	 * @return The state generated
+	 */
+	private State generateNextState(int position, String type) {
+		State generated = new State(this);
+		generated.cargo.get(position).add(0, type);
+		return generated;
 	}
 
-	private int spotMaxSize;
-
-	// Constructors
-	public State() {
-		this.cargo = new ArrayList<ArrayList<String>>();
-		this.loadingDock = new ArrayList<String>();
-		this.score = Integer.MAX_VALUE;
-		this.spotMaxSize = 0;
-	}
-	public State(Cargobay c, ArrayList<GenericShipment> s) {
-		this();
-		this.cargo = c.serialize();
-		this.spotMaxSize = c.getSpotMaxSize();
-		for (GenericShipment genericShipment : s) {
-			this.loadingDock.add(genericShipment.toString());
-		}
-		this.calcScore();
-	}
-	public State(State s) {
-		this();
-		for (ArrayList<String> arrayList : s.cargo) {
-			ArrayList<String> copy = new ArrayList<String>();
-			for (String string : arrayList) {
-				copy.add(string);
-			}
-			this.cargo.add(copy);
-		}
-		for (String value : s.loadingDock) {
-			this.loadingDock.add(value);
-		}
-		this.score = s.score;
-		this.spotMaxSize = s.spotMaxSize;
-	}
-
-	// Methods
-	public ArrayList<State> getNexts() {
-		ArrayList<State> nexts = new ArrayList<State>();
-		Cargobay cargobay = Cargobay.deserialize(this.cargo, this.spotMaxSize);
-
-		if (this.loadingDock.size() == 0 || cargobay.isFull()) {
-			nexts = null;
-		}
-
-		else {
-			ArrayList<Spot> spotsInCargobay = cargobay.getSpots();
-			int sizeOfLoadingDock = this.loadingDock.size();
-
-			for (int i = 0; i < sizeOfLoadingDock; i++) {
-				String typeOfShipment = this.loadingDock.remove(i);
-				GenericShipment shipment = GenericShipment.fromString(typeOfShipment);
-
-				for (int j = 0; j < spotsInCargobay.size(); j++) {
-					if (shipment.validatePosition(spotsInCargobay.get(j))) {
-						State newState = this.generateNextState(j, typeOfShipment);
-						boolean isNotDuplicated = true;
-
-						for (State state : nexts) {
-							if (state.equals(newState)) {
-								isNotDuplicated = false;
-							}
-						}
-
-						if (isNotDuplicated) {
-							newState.calcScore();
-							// Go put lower scores first
-							// (places lightFight and Ammo near cockpit)
-							
-							// place the ones that have the optionnal condition first
-							if (false && nexts.size() > 0 && newState.getScore() < nexts.get(0).getScore()) {
-								nexts.add(0, newState);
-							} else {
-								nexts.add(newState);
-							}
-						}
-					}
-				}
-
-				this.loadingDock.add(i, typeOfShipment);
-			}
-		}
-		return nexts;
-	}
-
+	// Display
 	public String toString() {
 		String display = "";
 
@@ -157,13 +186,8 @@ public class State {
 
 		return display;
 	}
-
-	private State generateNextState(int position, String type) {
-		State generated = new State(this);
-		generated.cargo.get(position).add(0, type);
-		return generated;
-	}
-
+	
+	// Custom behavior
 	public boolean equals(State s) {
 		boolean isEquals = true;
 
