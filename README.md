@@ -25,7 +25,7 @@ The different containers are:
 
 You can find the boat's below:<br/>
 
-[![map](https://github.com/DavAnaton/Warfare-EMA-110117/raw/master/Docs/Mission2.png)]()
+[![map](https://github.com/DavAnaton/Warfare-EMA-110117/raw/master/Docs/img/Mission2.png)]()
 <br/><br/>
 The list of containers to be loaded includes:
 - 8 Artilleries
@@ -52,9 +52,9 @@ Once soldiers are in place and containers are delivered to the battlefield, we n
 <br/>
 <br/>
 We therefore have 3 types of resources at our disposal:
-[![map](https://github.com/DavAnaton/Warfare-EMA-110117/raw/master/Docs/Mission3_1.png)]()
+[![map](https://github.com/DavAnaton/Warfare-EMA-110117/raw/master/Docs/img/Mission3_1.png)]()
 And this is how forces are at the begining of the battle.
-[![map](https://github.com/DavAnaton/Warfare-EMA-110117/raw/master/Docs/Mission3_2.png)]()
+[![map](https://github.com/DavAnaton/Warfare-EMA-110117/raw/master/Docs/img/Mission3_2.png)]()
 <br/><br/>
 We need to create an AI that uses a Minimax algorithm to calculate 3 moves ahead and find the best moves. 
 <br/>
