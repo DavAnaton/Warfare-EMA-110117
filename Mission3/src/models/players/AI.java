@@ -6,10 +6,14 @@ import algorithms.Minimax;
 import algorithms.State;
 import models.Board;
 import models.Game;
-
+/**
+ * A player that play automatically the best move it can find
+ */
 public class AI extends Player {
-	private int strength;
+	// Attributes
+	private int strength; // The Depth of the Minmax algorithm used to play
 
+	// Constructors
 	public AI() {
 		super();
 		this.game = null;
@@ -26,9 +30,13 @@ public class AI extends Player {
 		this.game = g;
 	}
 
+	// Methods
+	/**
+	 * The AI uses a Minmax algorithms:
+	 * He maximizes its score while reducing the possiblity for its opponent to score a lot.
+	 */
 	public void play() {
 		State bestState = Minimax.Minimax(this.game, this.strength);
-//		System.out.println(bestState);
 		ArrayList<int[]> shot = bestState.getLastMove();
 		ArrayList<int[]> move = new ArrayList<int[]>();
 		move.add(shot.remove(0));

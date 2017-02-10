@@ -1,15 +1,12 @@
 package models.pieces;
 
 import java.util.ArrayList;
-
+/**
+ * Abstract class to state the default behavior of each piece.
+ * Each piece can, then, define its own movement and shooting masks.
+ */
 public abstract class Piece {
-	protected int x;
-	protected int y;
-	protected int player;
-
-	protected boolean[][] movementMask = null;
-	protected int[][] shootingMask = null;
-
+	// Static variable to define shooting directions
 	public final static int NORTH = 1;
 	public final static int NORTHEAST = 2;
 	public final static int EAST = 5;
@@ -18,7 +15,16 @@ public abstract class Piece {
 	public final static int SOUTHWEST = 6;
 	public final static int WEST = 3;
 	public final static int NORTHWEST = 0;
+	
+	// Attributes
+	protected int x;
+	protected int y;
+	protected int player;
 
+	protected boolean[][] movementMask = null;
+	protected int[][] shootingMask = null;
+
+	// Constructors
 	protected Piece() {
 		this.x = 0;
 		this.y = 0;
@@ -30,14 +36,8 @@ public abstract class Piece {
 		this.y = y;
 		this.player = player;
 	}
-
-	public abstract Piece copy();
-
-	public void move(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-
+	
+	// Getters && Setters
 	public int getX() {
 		return x;
 	}
@@ -46,6 +46,29 @@ public abstract class Piece {
 		return y;
 	}
 
+	// Methods
+	/**
+	 * @return A new Piece of the same type as the orginal
+	 */
+	public abstract Piece copy();
+
+	/**
+	 * Updates the coordinates of this piece
+	 * @param x The new x coordinate
+	 * @param y The new y coordinate
+	 */
+	public void move(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	/**
+	 * Generates a list of possible moves based on the piece's movement mask.
+	 * **Those moves can be outside of the board**
+	 * TODO: Reverse the mask if player 1 is playing. For now, both players play in
+	 * 			the same direction
+	 * @return The list of legal moves for this piece
+	 */
 	public ArrayList<ArrayList<int[]>> getMoves() {
 		ArrayList<ArrayList<int[]>> moves = new ArrayList<ArrayList<int[]>>();
 		for (int i = 0; i < movementMask.length; i++) {
@@ -69,6 +92,13 @@ public abstract class Piece {
 		return moves;
 	}
 
+	/**
+	 * Generates a list of possible shots based on the piece's shooting mask.
+	 * **Those shots can be outside of the board**
+	 * TODO: Reverse the mask if player 1 is playing. For now, both players play in
+	 * 			the same direction
+	 * @return The list of legal shots for this piece
+	 */
 	public ArrayList<ArrayList<int[]>> getShots() {
 		ArrayList<ArrayList<int[]>> shots = new ArrayList<ArrayList<int[]>>();
 		for (int i = 0; i < this.shootingMask.length; i++) {
@@ -84,10 +114,18 @@ public abstract class Piece {
 		return shots;
 	}
 
-	public void interpolate(ArrayList<int[]> positions) {
+	/**
+	 * This function adds intermediate positions to a move.
+	 * @param positions An array that contains the initial and final positions and 
+	 * 			where we can add all the intermediate positions
+	 */
+	public abstract void interpolate(ArrayList<int[]> positions);
 
-	}
-
+	/*
+	 * Generates the coordinates that will be hit by your shot.
+	 * @param direction The direction of your aim. Can be Piece.NORTH, Piece.SOUTH...etc
+	 * @param strength The strength available
+	 */
 	public ArrayList<int[]> generateShotRange(int direction, int strength) {
 		ArrayList<int[]> shotRange = new ArrayList<int[]>();
 		int dx = 0, dy = 0;
@@ -126,7 +164,8 @@ public abstract class Piece {
 		}
 		return shotRange;
 	}
-
+	
+	// Display
 	public abstract String toString();
 
 }

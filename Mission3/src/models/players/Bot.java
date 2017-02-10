@@ -4,13 +4,19 @@ import java.util.ArrayList;
 
 import models.Board;
 import models.pieces.Piece;
-
+/**
+ * A player that plays automatically a random move
+ */
 public class Bot extends Player {
-
+	// Constructors
 	public Bot() {
 		// TODO Auto-generated constructor stub
 	}
 
+	// Methods
+	/**
+	 * Plays a random move and a random shot among all the possibilities
+	 */
 	public void play() {
 		Board b = this.game.getBoard();
 		updatePiecesList(b);

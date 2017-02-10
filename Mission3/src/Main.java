@@ -4,6 +4,7 @@ import java.util.Iterator;
 import algorithms.State;
 import models.Game;
 import models.players.AI;
+import models.players.Bot;
 import models.players.Player;
 
 
@@ -13,9 +14,9 @@ public class Main {
 							{null, null, null, null, "L0"},
 							{"S1", null, null, null, null}};
 		
-		Game game = new Game(new AI(3), new Player(), map);
+		Game game = new Game(new AI(3), new Bot(), map);
 		
-		game.test();
+		game.play();
 		
 //		System.out.println(game.getBoard());
 	}

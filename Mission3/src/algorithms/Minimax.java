@@ -60,20 +60,15 @@ public class Minimax {
 
 		do {
 			nextToExplore = tree.get(level).get(childIndexes.get(level));
-
-			// DEBUG
-			if(false&&level >= 2 && childIndexes.get(level-1) == 3) pl (nextToExplore);
-			// ENDOFDEBUG
 			
-			// The next level has all of its values computed, we can store the best score in
-			// the current level
+			// If updating, we store the score of the current node
 			if (updating) {
 				if (level == 0) {
 					// The initial states knows its best possible score and how to get it
 					break;
 					
 				} else { 
-					// If nodeToExplore has children
+					// If nodeToExplore has children we update it's score
 					if(tree.size() > level+1){
 
 						if(level%2 == 1){
@@ -82,13 +77,12 @@ public class Minimax {
 						}else{
 							nextToExplore.setScore(mins.get(level + 1));
 						}
-
-						// DEBUG
-						if(childIndexes.get(1) == 3) pl (level + "x-" + childIndexes.get(level) + " " + maxs.get(level + 1) + " " + mins.get(level + 1));
-						// ENDOFDEBUG
 					}
+					// Otherwise, its a wining/losing state and already has its score
+					
 					remove(level + 1);
 
+					// Moving on to next node
 					if (childIndexes.get(level) + 1 < tree.get(level).size()) {
 						// Goto next sibling
 						childIndexes.set(level, childIndexes.get(level) + 1);
@@ -119,7 +113,7 @@ public class Minimax {
 				
 
 				// DEBUG
-				if(childIndexes.get(1) == 3) pl (level + "-" + childIndexes.get(level) + " " + maxs.get(level) + " " + mins.get(level));
+				// if(childIndexes.get(1) == 3) pl (level + "-" + childIndexes.get(level) + " " + maxs.get(level) + " " + mins.get(level));
 				// ENDOFDEBUG
 
 				// We update the parent node
@@ -145,7 +139,7 @@ public class Minimax {
 			}
 			
 			// DEBUG
-			if(!updating) pl("Level " + level + " Node: " + childIndexes.get(level) + "/ " + (tree.get(level).size()-1));
+			// if(!updating) pl("Level " + level + " Node: " + childIndexes.get(level) + "/ " + (tree.get(level).size()-1));
 			// ENDOFDEBUG
 			
 		} while (true);
@@ -157,7 +151,6 @@ public class Minimax {
 			if(state.getScore() >= bestPossibleScore){
 				bestPossibleScore = state.getScore();
 				bestState = state;
-				System.out.println(state);
 			}
 		}
 		return bestState;

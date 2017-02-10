@@ -1,8 +1,12 @@
 package models.pieces;
 
-public class Rook extends Piece {
+import java.util.ArrayList;
 
-	private static boolean here = true;
+public class Rook extends Piece {
+	
+	// Attributes
+	private static boolean here = true; // used to quickly find the middle of the mask 
+										// when you look at it
 	private final static boolean [][] RookMovementMask = {	{false, false, false, false, false},
 															{false, false, false, false, false},
 															{false,  true,  true,  true, false},
@@ -14,6 +18,7 @@ public class Rook extends Piece {
 														{2, 0, 2},
 														{2, 2, 2}};
 	
+	// Constructors
 	public Rook() {
 		super();
 		this.shootingMask = RookShootingMask;
@@ -27,9 +32,17 @@ public class Rook extends Piece {
 	public Rook(Rook r){
 		this(r.x, r.y, r.player);
 	}
+	
+	// Methods
 	public Rook copy(){
 		return new Rook(this);
 	}
+	public void interpolate(ArrayList<int[]> positions) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	// Display
 	public String toString(){
 		return "S" + this.player;
 	}

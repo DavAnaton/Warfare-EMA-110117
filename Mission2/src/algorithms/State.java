@@ -53,6 +53,7 @@ public class State {
 	}
 
 	// Methods
+	
 	/**
 	 * Generates the list of state children to this one
 	 * @return The list of children
