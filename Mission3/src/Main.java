@@ -14,6 +14,7 @@ public class Main {
 							{null, null, null, null, "L0"},
 							{"S1", null, null, null, null}};
 		
+//		map = getRealMap();
 		Game game = new Game(new AI(3), new Bot(), map);
 		
 		game.play();
